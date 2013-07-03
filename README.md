@@ -147,6 +147,11 @@ Strict.Boolean  = 5;
 Strict.Array    = 6;
 ```
 
+##Ideas
+
+* Generate setters and getters on the from `setA` and `a`.
+* OOP stuff like overriding, inheritance and abstractions
+
 
 
 
