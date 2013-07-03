@@ -23,12 +23,12 @@ if (typeof(void 0) !== typeof require) {
 }
 
 var Test = function() {
-    this.$('a', 10, Strict.Number);
-    this.$('b', 'Hello I am a strict string', Strict.String);
-    this.$('c', {}, Strict.Object);
-    this.$('d', [], Strict.Array);
-    this.$('e', true, Strict.Boolean);
-    this.$('f', function() {
+    this.define('a', 10, Strict.Number);
+    this.define('b', 'Hello I am a strict string', Strict.String);
+    this.define('c', {}, Strict.Object);
+    this.define('d', [], Strict.Array);
+    this.define('e', true, Strict.Boolean);
+    this.define('f', function() {
         console.log();
     }, Strict.Function);
 }
@@ -37,10 +37,13 @@ Strict.create(Test);
 
 var t = new Test();
 
-console.log(t._('b'));
-console.log(t._('a'));
-t.$('e', false);
-console.log(t._('e'));
+console.log(t._('a')); //Use either the _ method
+console.log(t.a()); //or the getter method for the variable to get the value
+
+t.$('a', 250); //Use either $ method
+t.setA(250);   //or the sett method to set the variable
+
+console.log(t.a());//250
 
 var
     absV = Strict.def(function(number) {

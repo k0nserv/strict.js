@@ -2,7 +2,7 @@
 
 Experiments with strictly typed javascript.
 
-Strict.js is a small experiment trying to achive some strictness in javascript function and object definitions.
+Strict.js is a small experiment trying to achieve some strictness in javascript function and object definitions.
 
 ##Example
 `example.js` can be ran both via node.js or in the browser through the file `example.html`. 
@@ -14,37 +14,40 @@ Strict.js is a small experiment trying to achive some strictness in javascript f
 
 ```javascript
 var Person = function(name, age, female) {
-	//$ is used to define new variables
-	//the type only needs to be specified when
-	//the variable is defined, later it may be omitted
-
+	//define is used to define new variables
+	
 	//Define name as a string
-	this.$('name', name, Strict.String);	
+	this.define('name', name, Strict.String);	
 	
 	//Define age as a number, int or float
-	this.$('age', age, Strict.Number);
+	this.define('age', age, Strict.Number);
 	
-	//Define isFemal as a boolean
-	this.$('isFemale', female, String.boolean);
+	//Define isFemale as a boolean
+	this.define('isFemale', female, String.boolean);
 };
 
 /*	
 	Init Strictness for Person objects. 
-	This adds two new functions to the prototype
-	of the object $ used for settings variables 
-	and _ used to get values
+	This adds three new functions to the prototype
+	of the object:
+	
+	 * $ used for setting variables
+	 * _ use for getting variables
+	 * define for defining variables
 */
 Strict.create(Person);
 
 Person.prototype.birthday = function() {
 	//It's the persons birthday, increment age by one.
-	this.$('age', this._('age') + 1);
 	
-	return this._('age');
+	this.$('age', this._('age') + 1);
+	//or this.setAge(this.age() + 1);
+	
+	return this._('age'); //or this.age();
 };
 
 Person.prototype.adult = function() {
-	return this._('age') >= 18;
+	return this._('age') >= 18; // or this.age() > 18;
 }
 
 var me = new Person('Hugo', 20, false);
@@ -53,9 +56,11 @@ console.log(me._('age'));//Returns 20
 
 //Throws an error due to the miss-matched type
 me.$('age', '20');
+//or me.setAge('20');
 
 //Also throws an error, name is a string not a number
 me.$('name', 10);
+//or me.setName(10);
 ```
 
 ###Functions
@@ -92,28 +97,33 @@ console.log(log(10, 10));//1
 ##Documentation
 > Function: Strict.create(obj)
 
-Add the Strict variable utilites `$` and `_` to the prototype of obj.
+Add the Strict variable utilities `$` and `_` to the prototype of obj.
+
+> Function: define(variable, value, type)
+
+The `define` function is added to the prototype of objects passed to `Strict.create`. The function defines a new variable and creates setters and getters for it in camelcase.
+
+**Example:** 
+```javascript
+define('width', 150, Strict.Number)
+```
+
+creates the setter `setWidth` and the getter `width`. The values can also be accessed and modified through the `_` and `$` functions.
 
 
-> Function: $(variable, value, [type])
+> Function: $(variable, value)
 
 The `$` function is added to the prototype of objects passed to `Strict.create`. The function works as a setter.
 
-**Example:** Declare and define the variable with on `this` to be a number with value 150
+**Example:** Set the value of a previously created variable
 
-```
-this.$('width', 150, Strict.Number);
-````	
-
-After declaring a variable the type no longer needs to be specified
-
-```
+```javascript
 this.$('width', 350);
 ````
 
 > Function: _(variable)
 
-The `_` funciton is added to the the prototype of objects passed to `Strict.create`. The functions works as a getter.
+The `_` function is added to the the prototype of objects passed to `Strict.create`. The functions works as a getter.
 
 **Example:** Gets the previously defined variable `width`, will throw an error if `width` is not defined
 

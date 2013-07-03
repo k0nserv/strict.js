@@ -27,7 +27,6 @@ Strict.js - Experiment with strict typed variables and functions in javascript.
 
         Strict = Strict || {};
 
-
     Strict.String   = 1;
     Strict.Object   = 2;
     Strict.Function = 3;
@@ -67,10 +66,22 @@ Strict.js - Experiment with strict typed variables and functions in javascript.
         return variable === null || typeof (void 0) === typeof variable;
     },
 
+    toCamelCase = function(string) {
+        /** Credit to http://stackoverflow.com/users/590522/fredric
+            found in
+            http://stackoverflow.com/questions/2970525/javascript-regex-camel-case-sentence-case
+        **/
+        return string.replace(/^([A-Z])|\s(\w)/g, function(match, p1, p2, offset) {
+            if (p2) return p2.toUpperCase();
+            return p1.toLowerCase();
+        });
+    },
+
     deRef = function(variable) {
         if (isUndefined(this._iVars)) {
             this._iVars = {};
         }
+
 
         this._ = function(variable) {
             var result;
@@ -85,35 +96,66 @@ Strict.js - Experiment with strict typed variables and functions in javascript.
     },
 
 
-    setIVar = function(variable, value, type) {
+    setIVar = function(variable, value) {
         if (isUndefined(this._iVars)) {
             this._iVars = {};
         }
 
-        this.$ = function(variable, value, type) {
-            if (isUndefined(this._iVars[variable]) &&
-                !isType(type, Strict.Number)) {
-                throw new TypeError("Missing argument type");
+        this.$ = function(variable, value) {
+            if (!this._iVars[variable]) {
+                throw new Error("Variable `" + variable + "` has not been defined " +
+                    "use define(variable, value, type) to define it");
             }
 
-            type = type || this._iVars[variable].t;
-            if (!isType(value, type)) {
-                throw TypeMissMatchError(variable, typeMap[type], stringType(value));
-            }
-
-            this._iVars[variable] = {
-                v: value,
-                t: type
-            };
+            this._iVars[variable].v = value;
         };
 
-        this.$(variable, value, type);
+        this.$(variable, value);
+    },
+
+    define = function(variable, value, type) {
+        if (isUndefined(this._iVars)) {
+            this._iVars = {};
+        }
+        if (isUndefined(this._iVars[variable]) && !isType(type, Strict.Number)) {
+            throw new TypeError("Missing argument type");
+        }
+
+        if (!isUndefined(this._iVars[variable])) {
+            throw new Error("Variable `" + variable + "` is already defined");
+        }
+
+        type = type || this._iVars[variable].t;
+        if (!isType(value, type)) {
+            throw TypeMissMatchError(variable, typeMap[type], stringType(value));
+        }
+
+        var getCase = toCamelCase(variable),
+            setCase = toCamelCase("set " + getCase);
+
+        if (isUndefined(this[setCase])) {
+            this[setCase] = function(value) {
+                this.$(variable, value);
+            };
+        }
+
+        if (isUndefined(this[getCase])) {
+            this[getCase] = function() {
+                return this._(variable);
+            };
+        }
+
+        this._iVars[variable] = {
+            v: value,
+            t: type
+        };
     };
 
 
     Strict.create = function(obj) {
-        obj.prototype._ = deRef;
-        obj.prototype.$ = setIVar;
+        obj.prototype._         = deRef;
+        obj.prototype.$         = setIVar;
+        obj.prototype.define    = define;
 
         return obj;
     };
