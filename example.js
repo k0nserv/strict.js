@@ -64,4 +64,4 @@ console.log(absV(-10));
 console.log(optV(10));
 console.log(optV(10, "hello"));
 console.log(log(2));
-console.log(log(10w, 10));
+console.log(log(10, 10));
