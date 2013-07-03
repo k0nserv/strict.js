@@ -97,7 +97,7 @@ console.log(log(10, 10));//1
 ##Documentation
 > Function: Strict.create(obj)
 
-Add the Strict variable utilities `$` and `_` to the prototype of obj.
+Add the Strict variable utilities `define`, `$` and `_` to the prototype of obj.
 
 > Function: define(variable, value, type)
 
