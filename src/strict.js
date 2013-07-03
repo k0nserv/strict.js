@@ -1,10 +1,31 @@
+/**
+Copyright (C) 2013 Hugo Tunius
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Strict.js - Experiment with strict typed variables and functions in javascript.
+**/
 (function(root) {
     "use strict";
 
     var LIB_NAME = 'Strict',
 
         Strict = Strict || {};
-
 
     Strict.String   = 1;
     Strict.Object   = 2;
@@ -45,10 +66,22 @@
         return variable === null || typeof (void 0) === typeof variable;
     },
 
+    toCamelCase = function(string) {
+        /** Credit to http://stackoverflow.com/users/590522/fredric
+            found in
+            http://stackoverflow.com/questions/2970525/javascript-regex-camel-case-sentence-case
+        **/
+        return string.replace(/^([A-Z])|\s(\w)/g, function(match, p1, p2, offset) {
+            if (p2) return p2.toUpperCase();
+            return p1.toLowerCase();
+        });
+    },
+
     deRef = function(variable) {
         if (isUndefined(this._iVars)) {
             this._iVars = {};
         }
+
 
         this._ = function(variable) {
             var result;
@@ -63,40 +96,71 @@
     },
 
 
-    setIVar = function(variable, value, type) {
+    setIVar = function(variable, value) {
         if (isUndefined(this._iVars)) {
             this._iVars = {};
         }
 
-        this.$ = function(variable, value, type) {
-            if (isUndefined(this._iVars[variable]) &&
-                !isType(type, Strict.Number)) {
-                throw new TypeError("Missing argument type");
+        this.$ = function(variable, value) {
+            if (!this._iVars[variable]) {
+                throw new Error("Variable `" + variable + "` has not been defined " +
+                    "use define(variable, value, type) to define it");
             }
 
-            type = type || this._iVars[variable].t;
-            if (!isType(value, type)) {
-                throw TypeMissMatchError(variable, typeMap[type], stringType(value));
-            }
-
-            this._iVars[variable] = {
-                v: value,
-                t: type
-            };
+            this._iVars[variable].v = value;
         };
 
-        this.$(variable, value, type);
+        this.$(variable, value);
+    },
+
+    define = function(variable, value, type) {
+        if (isUndefined(this._iVars)) {
+            this._iVars = {};
+        }
+        if (isUndefined(this._iVars[variable]) && !isType(type, Strict.Number)) {
+            throw new TypeError("Missing argument type");
+        }
+
+        if (!isUndefined(this._iVars[variable])) {
+            throw new Error("Variable `" + variable + "` is already defined");
+        }
+
+        type = type || this._iVars[variable].t;
+        if (!isType(value, type)) {
+            throw TypeMissMatchError(variable, typeMap[type], stringType(value));
+        }
+
+        var getCase = toCamelCase(variable),
+            setCase = toCamelCase("set " + getCase);
+
+        if (isUndefined(this[setCase])) {
+            this[setCase] = function(value) {
+                this.$(variable, value);
+            };
+        }
+
+        if (isUndefined(this[getCase])) {
+            this[getCase] = function() {
+                return this._(variable);
+            };
+        }
+
+        this._iVars[variable] = {
+            v: value,
+            t: type
+        };
     };
 
 
     Strict.create = function(obj) {
-        obj.prototype._ = deRef;
-        obj.prototype.$ = setIVar;
+        obj.prototype._         = deRef;
+        obj.prototype.$         = setIVar;
+        obj.prototype.define    = define;
 
         return obj;
     };
 
-    Strict.def = function(args, callback, optional) {
+    Strict.def = function(callback, args, optional) {
         if (!isType(callback, Strict.Function)) {
             throw TypeMissMatchError("callback", typeMap[Strict.Function], stringType(callback));
         }
