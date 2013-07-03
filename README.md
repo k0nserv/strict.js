@@ -23,7 +23,7 @@ var Person = function(name, age, female) {
 	this.define('age', age, Strict.Number);
 	
 	//Define isFemale as a boolean
-	this.define('isFemale', female, String.boolean);
+	this.define('isFemale', female, String.Boolean);
 };
 
 /*	
