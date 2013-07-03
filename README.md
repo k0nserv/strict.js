@@ -12,7 +12,7 @@ Strict.js is a small experiment trying to achive some strictness in javascript f
 
 ###Class
 
-```
+```javascript
 var Person = function(name, age, female) {
 	//$ is used to define new variables
 	//the type only needs to be specified when
@@ -59,7 +59,7 @@ me.$('name', 10);
 ```
 
 ###Functions
-```
+```javascript
 //A function that calculates the nth fibonacci-number
 var fib = Strict.def(function(n) {
 	if (n === 0 || n === 1) {
@@ -117,7 +117,7 @@ The `_` funciton is added to the the prototype of objects passed to `Strict.crea
 
 **Example:** Gets the previously defined variable `width`, will throw an error if `width` is not defined
 
-```
+```javascript
 this._('width');
 ```
 
@@ -127,7 +127,7 @@ The `def` function is used to defined functions which constraints on argument ty
 
 **Example:** Create a function which expects a number and a string as arguments
 
-```
+```javascript
 var func = Strict.def(function(num, str) {
 	return str.charAt(num);
 }, 
@@ -138,13 +138,14 @@ var func = Strict.def(function(num, str) {
 
 The following types are supported as type parameters, the values are just constants used by the internal methods.
 
-
-    Strict.String   = 1;
-    Strict.Object   = 2;
-    Strict.Function = 3;
-    Strict.Number   = 4;
-    Strict.Boolean  = 5;
-    Strict.Array    = 6;
+```javascript
+Strict.String   = 1;
+Strict.Object   = 2;
+Strict.Function = 3;
+Strict.Number   = 4;
+Strict.Boolean  = 5;
+Strict.Array    = 6;
+```
 
 
 
