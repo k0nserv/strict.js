@@ -54,12 +54,12 @@ var
     optV = Strict.def(function(number, other) {
         return other + " (" + number + ")";
     }, [Strict.Number], //Argumnets expected
-    [Strict.String, "defaultValue"]), //Default arguments
+    [[Strict.String, "defaultValue"]]), //Default arguments
 
     log = Strict.def(function(x, base) {
         return Math.log(base) / Math.log(x);
     }, [Strict.Number], //Always expects one number
-    [Strict.Number, 2]); //Default argument base
+    [[Strict.Number, 2]]); //Default argument base
 
 console.log(absV(-10));
 

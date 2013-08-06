@@ -128,7 +128,7 @@ this.$('width');
 
 > Function: Strict.def(func, argumnetTypes, [defaultArguments])
 
-The `def` function is used to defined functions which constraints on argument types allowed. It also supports specifying default arguments. defaultArguments should be an array of even length e.g `[Strict.Number, 10]` defines one default argument of type Number with defaultValue `10`.
+The `def` function is used to defined functions which constraints on argument types allowed. It also supports specifying default arguments. defaultArguments should be an array of arrays e.g `[[Strict.Number, 10]]` defines one default argument of type Number with defaultValue `10`.
 
 **Example:** Create a function which expects a number and a string as arguments
 

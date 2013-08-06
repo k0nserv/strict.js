@@ -196,9 +196,9 @@ Strict.js - Experiment with strict typed variables and functions in javascript.
             if (!isUndefined(optional)) {
                 var numOptional = optional.length;
 
-                for (var i = 0; i < numOptional; i += 2) {
-                    var type    = optional[i],
-                        value   = optional[i + 1];
+                for (var i = 0; i < numOptional; i ++) {
+                    var type    = optional[i][0],
+                        value   = optional[i][1];
 
                     if (argumentsLength + i < arguments.length) {
                         value = arguments[argumentsLength + i];
