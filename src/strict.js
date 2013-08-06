@@ -106,6 +106,10 @@ Strict.js - Experiment with strict typed variables and functions in javascript.
                 throw new Error("Variable `" + variable + "` has not been defined " +
                     "use define(variable, value, type) to define it");
             }
+            var type = this._iVars[variable].t;
+            if (!isType(value, type)) {
+                throw TypeMissMatchError(variable, typeMap[type], stringType(value));
+            }
 
             this._iVars[variable].v = value;
         };
@@ -149,12 +153,21 @@ Strict.js - Experiment with strict typed variables and functions in javascript.
             v: value,
             t: type
         };
+    },
+
+    handleVariable = function(variable, value) {
+        var fn = setIVar;
+
+        if (value === void 0) {
+            fn = deRef;
+        }
+
+        return fn.call(this, variable, value);
     };
 
 
     Strict.create = function(obj) {
-        obj.prototype._         = deRef;
-        obj.prototype.$         = setIVar;
+        obj.prototype.$         = handleVariable;
         obj.prototype.define    = define;
 
         return obj;

@@ -19,7 +19,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
 if (typeof(void 0) !== typeof require) {
-    var Strict = require("./strict.js");
+    var Strict = require("./src/strict.js");
 }
 
 var Test = function() {
@@ -29,19 +29,20 @@ var Test = function() {
     this.define('d', [], Strict.Array);
     this.define('e', true, Strict.Boolean);
     this.define('f', function() {
-        console.log();
+        console.log('f');
     }, Strict.Function);
 }
-
 Strict.create(Test);
 
 var t = new Test();
 
-console.log(t._('a')); //Use either the _ method
+console.log(t.$('a')); //Use either the $ method
 console.log(t.a()); //or the getter method for the variable to get the value
 
 t.$('a', 250); //Use either $ method
-t.setA(250);   //or the sett method to set the variable
+t.setA(250);   //or the set method to set the variable
+
+//t.setA('250');
 
 console.log(t.a());//250
 
@@ -59,8 +60,6 @@ var
         return Math.log(base) / Math.log(x);
     }, [Strict.Number], //Always expects one number
     [Strict.Number, 2]); //Default argument base
-
-
 
 console.log(absV(-10));
 

@@ -5,7 +5,7 @@ Experiments with strictly typed javascript.
 Strict.js is a small experiment trying to achieve some strictness in javascript function and object definitions.
 
 ##Example
-`example.js` can be ran both via node.js or in the browser through the file `example.html`. 
+`example.js` can be ran both via node.js or in the browser through the file `example.html`.
 
 
 ##Usage
@@ -15,35 +15,34 @@ Strict.js is a small experiment trying to achieve some strictness in javascript 
 ```javascript
 var Person = function(name, age, female) {
 	//define is used to define new variables
-	
+
 	//Define name as a string
-	this.define('name', name, Strict.String);	
-	
+	this.define('name', name, Strict.String);
+
 	//Define age as a number, int or float
 	this.define('age', age, Strict.Number);
-	
+
 	//Define isFemale as a boolean
 	this.define('isFemale', female, String.Boolean);
 };
 
-/*	
-	Init Strictness for Person objects. 
+/*
+	Init Strictness for Person objects.
 	This adds three new functions to the prototype
 	of the object:
-	
-	 * $ used for setting variables
-	 * _ use for getting variables
+
+	 * $ used for setting variables or getting variables
 	 * define for defining variables
 */
 Strict.create(Person);
 
 Person.prototype.birthday = function() {
 	//It's the persons birthday, increment age by one.
-	
-	this.$('age', this._('age') + 1);
+
+	this.$('age', this.$('age') + 1);
 	//or this.setAge(this.age() + 1);
-	
-	return this._('age'); //or this.age();
+
+	return this.$('age'); //or this.age();
 };
 
 Person.prototype.adult = function() {
@@ -52,7 +51,7 @@ Person.prototype.adult = function() {
 
 var me = new Person('Hugo', 20, false);
 
-console.log(me._('age'));//Returns 20
+console.log(me.$('age'));//Returns 20
 
 //Throws an error due to the miss-matched type
 me.$('age', '20');
@@ -76,7 +75,7 @@ var fib = Strict.def(function(n) {
 
 console.log(fib(5));//8
 /*
-  Throws an error because fib expects a 
+  Throws an error because fib expects a
   number as the first argument not a string
 */
 console.log(fib('5'));
@@ -86,7 +85,7 @@ console.log(fib('5'));
 //number in base 2 or a given base.
 var log = Strict.def(function(x, base) {
 	return Math.log(base) / Math.log(x);
-}, 
+},
 [Strict.Number], //Always expects one number
 [Strict.Number, 2]); //Default argument base
 
@@ -97,13 +96,13 @@ console.log(log(10, 10));//1
 ##Documentation
 > Function: Strict.create(obj)
 
-Add the Strict variable utilities `define`, `$` and `_` to the prototype of obj.
+Add the Strict variable utilities `define`, and `$` to the prototype of obj.
 
 > Function: define(variable, value, type)
 
 The `define` function is added to the prototype of objects passed to `Strict.create`. The function defines a new variable and creates setters and getters for it in camelcase.
 
-**Example:** 
+**Example:**
 ```javascript
 define('width', 150, Strict.Number)
 ```
@@ -111,24 +110,20 @@ define('width', 150, Strict.Number)
 creates the setter `setWidth` and the getter `width`. The values can also be accessed and modified through the `_` and `$` functions.
 
 
-> Function: $(variable, value)
+> Function: $(variable, [,value])
 
-The `$` function is added to the prototype of objects passed to `Strict.create`. The function works as a setter.
+The `$` function is added to the prototype of objects passed to `Strict.create`. The function works as a setter or a getter depending on the number of argumenets.
+If value is undefined the function works as a getter
 
 **Example:** Set the value of a previously created variable
 
 ```javascript
 this.$('width', 350);
-````
+```
 
-> Function: _(variable)
-
-The `_` function is added to the the prototype of objects passed to `Strict.create`. The functions works as a getter.
-
-**Example:** Gets the previously defined variable `width`, will throw an error if `width` is not defined
-
-```javascript
-this._('width');
+**Example:** Get the value of previously created variable
+```javscript
+this.$('width');
 ```
 
 > Function: Strict.def(func, argumnetTypes, [defaultArguments])
@@ -140,7 +135,7 @@ The `def` function is used to defined functions which constraints on argument ty
 ```javascript
 var func = Strict.def(function(num, str) {
 	return str.charAt(num);
-}, 
+},
 [Strict.Number, Strict.String]);
 ```
 
@@ -159,7 +154,7 @@ Strict.Array    = 6;
 
 ##Ideas
 
-* Generate setters and getters on the from `setA` and `a`.
+* ~~Generate setters and getters on the from `setA` and `a`.~
 * OOP stuff like overriding, inheritance and abstractions
 
 
