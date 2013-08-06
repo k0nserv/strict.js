@@ -71,7 +71,7 @@ var fib = Strict.def(function(n) {
 	}
 
 	return fib(n - 1) + fib(n - 2);
-}, [Strigt.Number]);
+}, [Strict.Number]);
 
 console.log(fib(5));//8
 /*
@@ -87,7 +87,7 @@ var log = Strict.def(function(x, base) {
 	return Math.log(base) / Math.log(x);
 },
 [Strict.Number], //Always expects one number
-[Strict.Number, 2]); //Default argument base
+[[Strict.Number, 2]]); //Default argument base
 
 console.log(log(2)); //1
 console.log(log(10, 10));//1
