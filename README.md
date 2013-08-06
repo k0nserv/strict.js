@@ -46,7 +46,7 @@ Person.prototype.birthday = function() {
 };
 
 Person.prototype.adult = function() {
-	return this.$('age') >= 18; // or this.age() > 18;
+	return this.$('age') >= 18; // or this.age() >= 18;
 }
 
 var me = new Person('Hugo', 20, false);
