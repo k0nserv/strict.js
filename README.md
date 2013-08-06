@@ -28,7 +28,7 @@ var Person = function(name, age, female) {
 
 /*
 	Init Strictness for Person objects.
-	This adds three new functions to the prototype
+	This adds two new functions to the prototype
 	of the object:
 
 	 * $ used for setting variables or getting variables
@@ -46,7 +46,7 @@ Person.prototype.birthday = function() {
 };
 
 Person.prototype.adult = function() {
-	return this._('age') >= 18; // or this.age() > 18;
+	return this.$('age') >= 18; // or this.age() > 18;
 }
 
 var me = new Person('Hugo', 20, false);
