@@ -43,6 +43,13 @@ t.$('a', 250); //Use either $ method
 t.setA(250);   //or the set method to set the variable
 
 //t.setA('250');
+try {
+    t.setA('250')
+}
+catch (ex) {
+    console.log("Miss matched type")
+    console.log(ex);
+}
 
 console.log(t.a());//250
 
